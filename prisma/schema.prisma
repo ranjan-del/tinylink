@@ -1,13 +1,11 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  // no `url` here anymore – that lives in prisma.config.ts now
 }
-
-// ---------- Auth & users ----------
 
 model User {
   id            String   @id @default(cuid())
@@ -16,7 +14,6 @@ model User {
   emailVerified DateTime?
   image         String?
 
-  // Relations
   accounts Account[]
   sessions Session[]
   links    Link[]
@@ -24,7 +21,6 @@ model User {
   createdAt DateTime @default(now())
 }
 
-// From Auth.js / NextAuth Prisma adapter
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -61,22 +57,17 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ---------- Links ----------
-
 model Link {
-  id           String   @id @default(cuid())
-  code         String   @unique
-  targetUrl    String
-  totalClicks  Int      @default(0)
+  id            String   @id @default(cuid())
+  code          String   @unique
+  targetUrl     String
+  totalClicks   Int      @default(0)
   lastClickedAt DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  // Ownership
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id])
-
-  // Anonymous / expiry
-  isAnonymous Boolean   @default(false)
+  userId      String?
+  user        User?   @relation(fields: [userId], references: [id])
+  isAnonymous Boolean  @default(false)
   expiresAt   DateTime?
 }
