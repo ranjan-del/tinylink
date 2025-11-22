@@ -2,6 +2,7 @@
 
 import { useSession, signIn } from "next-auth/react";
 import { useState } from "react";
+import type { CSSProperties } from "react";
 
 // ----- Mock analytics data -----
 
@@ -137,6 +138,8 @@ function formatNumber(n: number) {
 }
 
 export default function AnalyticsPage() {
+  const { data: session, status } = useSession();
+  const [range, setRange] = useState<RangeKey>("overall");
 
   if (status === "loading") {
     return (
@@ -145,11 +148,6 @@ export default function AnalyticsPage() {
       </div>
     );
   }
-
-  
-  const { data: session } = useSession();
-  const isAuthed = !!session?.user;
-  const [range, setRange] = useState<RangeKey>("overall");
   const data = ANALYTICS_DATA[range];
 
   const maxTimeline =
